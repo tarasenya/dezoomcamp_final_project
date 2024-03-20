@@ -53,7 +53,6 @@ def koalas_to_bq():
     job_config = bigquery.LoadJobConfig()
     job_config.write_disposition = bigquery.WriteDisposition.WRITE_APPEND
     job_config.skip_leading_rows = 1
-    #job_config.autodetect = True
     job_config.source_format = bigquery.SourceFormat.CSV
 
     uri = f"gs://{bucket_name}/my_data.csv"
