@@ -1,0 +1,22 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pandas="*"
+requests = "*"
+mage-ai = "*"
+prefect = "*"
+prefect-gcp = "*"
+google-cloud-storage = "*"
+configparser = "*"
+pip = "*"
+install = "*"
+google-cloud-bigquery = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
+python_full_version = "3.10.13"
