@@ -14,8 +14,12 @@ pip = "*"
 install = "*"
 google-cloud-bigquery = "*"
 dlt = {extras = ["bigquery"], version = "*"}
+pydantic = "*"
+google-cloud-bigquery-storage = "*"
 
 [dev-packages]
+black = "*"
+isort = "*"
 
 [requires]
 python_version = "3.10"
