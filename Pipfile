@@ -13,9 +13,9 @@ configparser = "*"
 pip = "*"
 install = "*"
 google-cloud-bigquery = "*"
-dlt = {extras = ["bigquery"], version = "*"}
 pydantic = "*"
 google-cloud-bigquery-storage = "*"
+dlt = {extras = ["gs"], version = "*"}
 
 [dev-packages]
 black = "*"

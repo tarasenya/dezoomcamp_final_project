@@ -20,6 +20,7 @@ def ingest_koala_data_to_big_query(
     prepared_data = bigquery_adapter(
         koala_data(resource_name=resource_name, bucket_name=bucket_name),
         cluster=["sighttime"],
+        partition="sightdate",
         table_description="Koala sighting data",
     )
 

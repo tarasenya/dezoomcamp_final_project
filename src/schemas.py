@@ -1,14 +1,15 @@
 from google.cloud.bigquery import SqlTypeNames
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, date
 
 class KoalaScheme(BaseModel):
     model_config = ConfigDict(coerce_numbers_to_str=True)
-    
+
     objectid: int
     globalid: str
     sighttime: datetime
+    sightdate: date
     joeypresent: Optional[str] = None
     numberofkoala: Optional[int] = None
     koalacondifinal: Optional[str] = None
