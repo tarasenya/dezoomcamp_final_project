@@ -2,7 +2,7 @@ from google.cloud.bigquery import SqlTypeNames
 from pydantic import BaseModel, ConfigDict
 from typing import Optional
 from datetime import datetime, date
-
+from pyspark.sql import types
 class KoalaScheme(BaseModel):
     model_config = ConfigDict(coerce_numbers_to_str=True)
 
@@ -23,6 +23,24 @@ class KoalaScheme(BaseModel):
     gis_x: float
     gis_y: float
 
+spark_schema = types.StructType([
+    types.StructField('objectid', types.LongType(), False),
+    types.StructField('globalid', types.StringType(), False),
+    types.StructField('sighttime', types.TimestampType(), False),
+    types.StructField('sightdate', types.DateType(), False),
+    types.StructField('joeypresent',types.StringType(), True),
+    types.StructField('numberofkoala', types.LongType(), True),
+    types.StructField('koalacondifinal', types.StringType(), True),
+    types.StructField('locality',types.StringType(), True ),
+    types.StructField('near_koala_habitat', types.StringType(), True),
+    types.StructField('attachment_cc_lic_check', types.StringType(), True),
+    types.StructField('lga',types.StringType(), True),
+    types.StructField('sighting_lat_wgs84', types.DoubleType(), True),
+    types.StructField('sighting_long_wgs84', types.DoubleType(), True),
+    types.StructField('vetting_code', types.StringType(), True),
+    types.StructField('gis_x', types.DoubleType(), False),
+    types.StructField('gis_y', types.DoubleType(), False)
+])
 
 koala_schema = [{
     'name': 'objectid',
