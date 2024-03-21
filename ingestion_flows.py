@@ -11,17 +11,10 @@ from src.ingestion_to_bq_pipeline import ingest_koala_data_to_big_query
 from src.definitions import table_name, dataset, bucket_name, project_name
 from datetime import datetime
 
-path_to_private_key = r"/home/taras/Documents/secrets/personal_gcp.json"
-client = storage.Client.from_service_account_json(
-    json_credentials_path=path_to_private_key
-)
-
-bucket = client.bucket(bucket_name)
-
 
 @task(name="Get_koala_data_and_transform_to_tabular_view")
-def koala_data_to_tabular_view() -> pd.DataFrame:
-    current_data = query_koala_endpoint()
+def koala_data_to_tabular_view(where_query) -> pd.DataFrame:
+    current_data = query_koala_endpoint(where_query=where_query)
     array_of_koala_data: List[KoalaData] = flatten_koala_response(current_data)
     df = pd.DataFrame(array_of_koala_data)
     df["sighttime"] = pd.to_datetime(df["sighttime"], unit="ms")
@@ -30,22 +23,27 @@ def koala_data_to_tabular_view() -> pd.DataFrame:
 
 
 @flow(name="Koalas_to_GCS", log_prints=True)
-def koalas_to_gcs():
-    df = koala_data_to_tabular_view()
-    source_name = f"koala_{datetime.now().date()}.csv"
+def koalas_to_gcs(source_name, where_query):
+    path_to_private_key = r"/home/taras/Documents/secrets/personal_gcp.json"
+    client = storage.Client.from_service_account_json(
+    json_credentials_path=path_to_private_key)
+
+    bucket = client.bucket(bucket_name)
+    df = koala_data_to_tabular_view(where_query)
     blob = bucket.blob(source_name)
     blob.upload_from_string(df.to_csv(index=False), "text/csv")
 
 
-@flow(name="Koalas_to_BQ", log_prints=True)
-def koalas_to_bq():
-    koalas_to_gcs()
+@flow(name="Koalas to BQ", log_prints=True)
+def koalas_to_bq(source_name, where_query):
+
+    koalas_to_gcs(source_name, where_query)
     client = bigquery.Client()
 
     table_id = f"{project_name}.{dataset}.{table_name}"
     print(f"Writing into {table_id}")
     ingest_koala_data_to_big_query(
-        resource_name=f"koala_{datetime.now().date()}.csv",
+        resource_name=source_name,
         bucket_name=bucket_name,
         dataset_name=dataset,
         table_name=table_name,
@@ -55,5 +53,17 @@ def koalas_to_bq():
     print("Loaded {} rows.".format(destination_table.num_rows))
 
 
+@flow(name="Current koalas sighting to BQ", log_prints=True)
+def current_koalas_to_bq():
+    source_name = f"koala_{datetime.now().date()}.csv"
+    where_query = r"sighttime+%3E+CURRENT_TIMESTAMP+-+INTERVAL+%271%27+DAY"
+    koalas_to_bq(source_name, where_query)
+
+@flow(name="Current koalas sighting to BQ", log_prints=True)
+def initial_state_koalas_to_bq():
+    source_name = f"koala_initial.csv"
+    where_query = r"sighttime+%3E+DATE+%272023-01-01%27"
+    koalas_to_bq(source_name, where_query)
+
 if __name__ == "__main__":
-    koalas_to_bq()
+    initial_state_koalas_to_bq()
