@@ -19,7 +19,7 @@ pull:
     branch: main
     access_token: null
 - prefect.deployments.steps.set_working_directory:
-      directory: /dezoomcamp_final_project
+      directory: /home/taras/dezoomcamp_final_project
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
@@ -29,9 +29,57 @@ deployments:
   description: null
   schedule: {}
   flow_name: null
-  entrypoint: 
+  entrypoint: ./src/flows/ingestion_flows.py:initial_state_koalas_to_bq 
   parameters: {}
   work_pool:
-    name: null
+    name: general_worker
     work_queue_name: null
     job_variables: {}
+
+- name: daily-ingestion-deployment
+  version: null
+  tags: []
+  description: null
+  schedule: {}
+  flow_name: null
+  entrypoint: ./src/flows/ingestion_flows.py:current_koalas_to_bq
+  parameters: {}
+  work_pool:
+    name: general_worker
+    work_queue_name: null
+    job_variables: {}
+  schedule:
+    cron: 0 20 * * *
+    timezone: UTC
+
+- name: koala-health-conditions-deployment
+  version: null
+  tags: []
+  description: null
+  schedule: {}
+  flow_name: null
+  entrypoint: ./src/flows/dwh_flows.py:koala_health_conditions
+  parameters: {}
+  work_pool:
+    name: general_worker
+    work_queue_name: null
+    job_variables: {}
+  schedule:
+    cron: 0 21 * * *
+    timezone: UTC   
+
+- name: total-number-of-koala-met-deployment
+  version: null
+  tags: []
+  description: null
+  schedule: {}
+  flow_name: null
+  entrypoint: ./src/flows/dwh_flows.py:total_number_of_koalas_met
+  parameters: {}
+  work_pool:
+    name: general_worker
+    work_queue_name: null
+    job_variables: {}
+  schedule:
+    cron: 0 21 * * *
+    timezone: UTC  

@@ -31,21 +31,21 @@ SPARK_SESSION.conf.set("temporaryGcsBucket", bucket_name)
 
 TABLE_NAME = f"{project_name}.{dataset}.{table_name}"
 
-KOALA_DATA = (
-    SPARK_SESSION.read.format("bigquery")
-    .option("table", TABLE_NAME)
-    .schema(spark_schema)
-    .load()
-)
-
 
 @flow(name="Summarized historical data", log_prints=True)
 def total_number_of_koalas_met():
     print("Preparing the summarized historical data")
     historical_data_table = f"{project_name}.{dataset}.{HISTORICAL_DATA}"
 
+    koala_data = (
+        SPARK_SESSION.read.format("bigquery")
+        .option("table", TABLE_NAME)
+        .schema(spark_schema)
+        .load()
+    )
+
     total_koalas_seen = (
-        KOALA_DATA.groupBy("sightdate")
+        koala_data.groupBy("sightdate")
         .sum("numberofkoala")
         .withColumnRenamed("sum(numberofkoala)", "totalnumberofkoala")
     )
@@ -61,14 +61,22 @@ def total_number_of_koalas_met():
 def koala_health_conditions():
     print("Preparing the summarized health data.")
     health_data_table = f"{project_name}.{dataset}.{HEALTH_DATA}"
+    
+    koala_data = (
+        SPARK_SESSION.read.format("bigquery")
+        .option("table", TABLE_NAME)
+        .schema(spark_schema)
+        .load()
+    )
 
     health_data = (
-        KOALA_DATA.groupBy("koalacondifinal")
+        koala_data.groupBy("koalacondifinal")
         .sum("numberofkoala")
         .withColumnRenamed("sum(numberofkoala)", "totalnumberofkoala")
     )
-    health_data.write.format('bigquery').option('table', health_data_table).mode(
-        'overwrite').save()
+    health_data.write.format("bigquery").option("table", health_data_table).mode(
+        "overwrite"
+    ).save()
 
     print(f"The data has been written to  {health_data_table}.")
     health_data.limit(10).show()

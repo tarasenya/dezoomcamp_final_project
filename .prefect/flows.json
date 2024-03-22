@@ -1,0 +1,6 @@
+{
+  "Current koalas sighting to BQ": "src/flows/ingestion_flows.py:current_koalas_to_bq",
+  "Health data": "src/flows/dwh_flows.py:koala_health_conditions",
+  "Initial koalas sighting to BQ": "src/flows/ingestion_flows.py:initial_state_koalas_to_bq",
+  "Summarized historical data": "src/flows/dwh_flows.py:total_number_of_koalas_met"
+}
