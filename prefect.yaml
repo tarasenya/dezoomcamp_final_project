@@ -18,16 +18,18 @@ pull:
     repository: https://github.com/tarasenya/dezoomcamp_final_project.git
     branch: main
     access_token: null
+- prefect.deployments.steps.set_working_directory:
+      directory: /dezoomcamp_final_project
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
-- name: null
+- name: initial-ingestion-deployment
   version: null
   tags: []
   description: null
   schedule: {}
   flow_name: null
-  entrypoint: null
+  entrypoint: 
   parameters: {}
   work_pool:
     name: null
