@@ -19,7 +19,7 @@ pull:
     branch: main
     access_token: null
 - prefect.deployments.steps.set_working_directory:
-      directory: /home/taras/dezoomcamp_final_project
+      directory: /tmp/dezoomcamp_final_project
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
