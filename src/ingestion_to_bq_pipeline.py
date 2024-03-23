@@ -16,7 +16,7 @@ def koala_data(resource_name: str, bucket_name: str):
 def ingest_koala_data_to_big_query(
     resource_name: str, bucket_name: str, dataset_name: str, table_name: str
 ):
-
+   
     prepared_data = bigquery_adapter(
         koala_data(resource_name=resource_name, bucket_name=bucket_name),
         cluster=["sighttime"],

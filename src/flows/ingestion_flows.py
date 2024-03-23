@@ -24,10 +24,7 @@ def koala_data_to_tabular_view(where_query) -> pd.DataFrame:
 
 @flow(name="Koalas_to_GCS", log_prints=True)
 def koalas_to_gcs(source_name, where_query):
-    path_to_private_key = r"/home/taras/Documents/secrets/personal_gcp.json"
-    client = storage.Client.from_service_account_json(
-        json_credentials_path=path_to_private_key
-    )
+    client = storage.Client()
 
     bucket = client.bucket(bucket_name)
     df = koala_data_to_tabular_view(where_query)
@@ -69,4 +66,6 @@ def initial_state_koalas_to_bq():
 
 
 if __name__ == "__main__":
-    initial_state_koalas_to_bq()
+    source_name = f"koala_initial.csv"
+    where_query = r"sighttime+%3E+DATE+%272023-01-01%27"
+    koalas_to_gcs(source_name, where_query)
