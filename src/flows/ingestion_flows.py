@@ -24,7 +24,7 @@ def koala_data_to_tabular_view(where_query) -> pd.DataFrame:
 
 @flow(name="Koalas_to_GCS", log_prints=True)
 def koalas_to_gcs(source_name, where_query):
-    client = storage.Client()
+    client = storage.Client(project=project_name)
 
     bucket = client.bucket(bucket_name)
     df = koala_data_to_tabular_view(where_query)
@@ -36,7 +36,7 @@ def koalas_to_gcs(source_name, where_query):
 def koalas_to_bq(source_name, where_query):
 
     koalas_to_gcs(source_name, where_query)
-    client = bigquery.Client()
+    client = bigquery.Client(project=project_name)
 
     table_id = f"{project_name}.{dataset}.{table_name}"
     print(f"Writing into {table_id}")
