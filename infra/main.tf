@@ -33,13 +33,16 @@ resource "google_compute_instance" "gcp_vm" {
  
     network_interface {
       network = "default"
+      access_config {
+        
+      }
     }
     metadata_startup_script = file("../scripts/initial_script.sh")
 }
 
 resource "google_storage_bucket" "demo-bucket" {
   name          = var.gcs_bucket_name
-  location      = var.location
+  location      = var.region
   force_destroy = true
 
 
@@ -57,5 +60,5 @@ resource "google_storage_bucket" "demo-bucket" {
 
 resource "google_bigquery_dataset" "demo_dataset" {
   dataset_id = var.bq_dataset_name
-  location   = var.location
+  location   = var.region
 }

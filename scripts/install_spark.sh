@@ -2,10 +2,12 @@
 
 cd ~
 mkdir spark
+cd spark
 wget https://download.java.net/java/GA/jdk11/9/GPL/openjdk-11.0.2_linux-x64_bin.tar.gz
 tar xzfv openjdk-11.0.2_linux-x64_bin.tar.gz
 echo 'export JAVA_HOME="${HOME}/spark/jdk-11.0.2"' >> ~/.bashrc
-echo 'export PATH="${JAVA_HOME}/bin:${PATH}"' >> ~/.bashrc
+echo 'export PATH="${JAVA_HOME/bin:${PATH}"' >> ~/.bashrc
+source ~/.bashrc
 java --version
 echo "Java is there"
 wget https://archive.apache.org/dist/spark/spark-3.3.2/spark-3.3.2-bin-hadoop3.tgz
