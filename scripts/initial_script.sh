@@ -2,9 +2,9 @@
 sudo apt-get update 
 sudo apt-get install -yq git python3 python3-pip python3-distutils 
 cd ~
-git clone https://github.com/tarasenya/dezoomcamp_final_project.git 
+git clone -b terraform_deployment https://github.com/tarasenya/dezoomcamp_final_project.git 
 cd dezoomcamp_final_project
-echo 'export PYTHONPATH="${PYTHONPATH}:/my/other/path"' >> ~/.bashrc
+echo 'export PYTHONPATH="${PYTHONPATH}:$(pwd)"' >> ~/.bashrc
 pip3 install pipenv
 echo 'export "PATH=~/.local/bin:${PATH}"' >> ~/.bashrc
 source ~/.bashrc
