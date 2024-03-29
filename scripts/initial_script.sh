@@ -1,7 +1,7 @@
-#!/bin/bash
-cd /tmp
-git clone https://github.com/tarasenya/dezoomcamp_final_project.git
-cd dezoomcamp_final_project
-pip install pipenv
-pipenv install --deploy
-pipenv shell
+#! /bin/bash
+apt-get update 
+apt-get install -yq git python3 python3-pip python3-distutils 
+pip3 install pipenv
+echo 'export "PATH=~/.local/bin:${PATH}"' >> ~/.bashrc
+source ~/.bashrc
+

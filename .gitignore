@@ -1,2 +1,7 @@
 __pycache__/
 *.pyc
+terraform.json
+.terraform
+*.tfstate
+*.tfstate.backup
+*.hcl
