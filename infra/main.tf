@@ -38,6 +38,10 @@ resource "google_compute_instance" "gcp_vm" {
       }
     }
     metadata_startup_script = file("../scripts/initial_script.sh")
+  service_account {
+    email  = var.service_account_email
+    scopes = ["cloud-platform"]
+  }
 }
 
 resource "google_storage_bucket" "demo-bucket" {

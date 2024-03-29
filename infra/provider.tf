@@ -1,6 +1,6 @@
 provider "google" {
-    project = "dataengineeringzoomcamp-409819"
-    region = "eu-west3"
-    zone = "eu-west3-c"
+    project = var.project
+    region = var.region
+    zone = var.location
     credentials = "terraform.json"
 }

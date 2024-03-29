@@ -38,3 +38,8 @@ variable "machine_type" {
   description = "GCP VM type"
   default = "e2-standard-4"
 }
+
+variable "service_account_email" {
+  description  = "Existing service accoutn email adress"
+  default = "data-engineering-user@dataengineeringzoomcamp-409819.iam.gserviceaccount.com"
+}
