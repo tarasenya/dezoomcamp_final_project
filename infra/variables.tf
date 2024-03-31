@@ -43,3 +43,8 @@ variable "service_account_email" {
   description  = "Existing service accoutn email adress"
   default = "data-engineering-user@dataengineeringzoomcamp-409819.iam.gserviceaccount.com"
 }
+
+variable "rolesList" {
+type =list(string)
+default = ["roles/storage.admin","roles/bigquery.admin", "roles/storage.objectAdmin", "roles/viewer"]
+}
