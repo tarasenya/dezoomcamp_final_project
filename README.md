@@ -1,4 +1,5 @@
 # Final project for Data Enginnering Zoomcamp 2024
+
 ## Problem description
 There are lots of wild koalas in Queensland, Australia. One can report koalas sighting to the Department of Environment, Science and Innovation by using the free  [QWildLife app](https://environment.des.qld.gov.au/wildlife/animals/living-with/koalas/report-sightings). All sightings are then saved on the corresponding server and can be retrieved using [spatial-gis server's endpoint](https://spatial-gis.information.qld.gov.au/arcgis/rest/services/QWise/CrocodileSightingsPublicView/FeatureServer/30).
 
@@ -32,17 +33,22 @@ The code's structure can be taken from the next scheme:
     ├── .dlt              <-  folder for .dlt services.
 
 ### IaC/Cloud
-TEST
-### Data ingestion: batch
-TEST
-### Data warehouse: BigQuery
-TEST
-### Transformations: Spark
-TEST
-### Dashboard: Google Looker
-TEST
-## Visualizing graphics:
-Here is a link to the Looker Studio report:
-https://lookerstudio.google.com/reporting/015ce847-729a-4297-8085-b51c5216e0bc/page/HUttD
 
-A snapshot of this report can be found in _visualization_ folder.
+We use Terraform to provision an infrastructure for the project:
+  - GCP Compute Engine 
+  - GCP BigQuery dataset
+  - GCP Bucket
+  
+Detailed steps for the provisioning    can be found here: [provisioning_infrastructure.md](docs/provisioning_infrastructure.md)
+### Data ingestion: batch
+Data ingestion is done in a DLT fashion using prefect orchestrator:
+1. Every day at 9 p.m. data is loaded to a GCP bucket.
+2. After this data from the corresponding json file is transformed and loaded into a BigQuery dataset using dlt service.
+### Data warehouse: BigQuery
+The resulted table 'koala' is clustered using 'sighttime' column and    partitioned by 'sightdate' column. After using 'analytic' pipeline tables 'historical_koala_data'
+and 'health_koala_data' are created and filled.
+### Transformations: Spark
+Spark (as well as PySpark) is used for 'analytical' part of the project, e.g. we calculate the overall statistics for health/dead/injured koalas , saved into 'health_koala_data tabel, as well as total number of koalas seen on a particular day, saved into 'historical_koala_data' table.
+### Dashboard: Google Looker
+The visualization is done using Looker Studio. It is impossible to save a code for it. Here is a link to the Looker Studio [report](https://lookerstudio.google.com/reporting/015ce847-729a-4297-8085-b51c5216e0bc/page/HUttD).
+A snapshot of this report can be found in _visualization_ folder ( Meeting_Koalas.pdf).
