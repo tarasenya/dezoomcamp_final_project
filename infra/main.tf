@@ -7,15 +7,27 @@ terraform {
   }
 }
 
+resource "google_service_account" "service_account" {
+  account_id   = "taras-de"
+  display_name = "taras-de"
+}
 
+resource "google_project_iam_binding" "service_account" {
+  project = var.project
+  count   = length(var.rolesList)
+  role    = var.rolesList[count.index]
+  members = [
+    "serviceAccount:${google_service_account.service_account.email}"
+  ]
+}
 resource "google_compute_instance" "gcp_vm" {
-    name = var.server_name
+  name = var.server_name
 
-    machine_type = var.machine_type
+  machine_type = var.machine_type
 
-    zone = var.location
+  zone = var.location
 
-    boot_disk {
+  boot_disk {
     auto_delete = true
 
     initialize_params {
@@ -25,21 +37,21 @@ resource "google_compute_instance" "gcp_vm" {
     }
 
     mode = "READ_WRITE"
-    }
+  }
 
-    can_ip_forward      = false
-    deletion_protection = false
-    enable_display      = false
- 
-    network_interface {
-      network = "default"
-      access_config {
-        
-      }
+  can_ip_forward      = false
+  deletion_protection = false
+  enable_display      = false
+
+  network_interface {
+    network = "default"
+    access_config {
+
     }
-    metadata_startup_script = file("../scripts/initial_script.sh")
+  }
+  metadata_startup_script = file("../scripts/initial_script.sh")
   service_account {
-    email  = var.service_account_email
+    email  = google_service_account.service_account.email
     scopes = ["cloud-platform"]
   }
 }
