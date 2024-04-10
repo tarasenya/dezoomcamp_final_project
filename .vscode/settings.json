@@ -1,4 +1,5 @@
 {   
     "terminal.integrated.env.linux": {"PYTHONPATH": "${workspaceFolder}"},
     "isort.args":["--profile", "black"],
+    "autoDocstring.docstringFormat":"sphinx-notypes"
 }
