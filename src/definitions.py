@@ -1,3 +1,6 @@
+"""
+Defining some constants used in code.
+"""
 from configparser import ConfigParser
 
 config_parser = ConfigParser()
