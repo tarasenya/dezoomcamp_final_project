@@ -1,3 +1,6 @@
+"""
+Flows dealing with data ingestion and transfer
+"""
 from typing import List
 from prefect import flow, task
 import pandas as pd
@@ -14,6 +17,12 @@ from datetime import datetime
 
 @task(name="Get_koala_data_and_transform_to_tabular_view")
 def koala_data_to_tabular_view(where_query) -> pd.DataFrame:
+    """
+    Queries the SightedKoala endpoint using where_query, flattens the response
+    and saves it as pandas DataFrame.
+    :param where_query: defines the date range when a koala has been sighted.
+    :return: pandas DataFrame representation of processed koala sighting data.
+    """
     current_data = query_koala_endpoint(where_query=where_query)
     array_of_koala_data: List[KoalaData] = flatten_koala_response(current_data)
     df = pd.DataFrame(array_of_koala_data)
@@ -24,6 +33,10 @@ def koala_data_to_tabular_view(where_query) -> pd.DataFrame:
 
 @flow(name="Koalas_to_GCS", log_prints=True)
 def koalas_to_gcs(source_name, where_query):
+    """
+    :param source_name: name of a file we save koala sighting data
+    :param where_query: defines the date range when a koala has been sighted.
+    """
     client = storage.Client(project=project_name)
 
     bucket = client.bucket(bucket_name)
@@ -34,6 +47,11 @@ def koalas_to_gcs(source_name, where_query):
 
 @flow(name="Koalas to BQ", log_prints=True)
 def koalas_to_bq(source_name, where_query):
+    """
+    Loads preprocessed koala sighting data to the BigQuery table.
+    :param source_name:  name of a file we have saved koala sighting data
+    :param where_query: defines the date range when a koala has been sighted.
+    """
 
     koalas_to_gcs(source_name, where_query)
     client = bigquery.Client(project=project_name)
@@ -53,6 +71,9 @@ def koalas_to_bq(source_name, where_query):
 
 @flow(name="Current koalas sighting to BQ", log_prints=True)
 def current_koalas_to_bq():
+    """
+    Loads current preprocessed koala sighting data to the BigQuery table.
+    """
     source_name = f"koala_{datetime.now().date()}.csv"
     where_query = r"sighttime+%3E+CURRENT_TIMESTAMP+-+INTERVAL+%271%27+DAY"
     koalas_to_bq(source_name, where_query)
@@ -60,12 +81,10 @@ def current_koalas_to_bq():
 
 @flow(name="Initial koalas sighting to BQ", log_prints=True)
 def initial_state_koalas_to_bq():
-    source_name = f"koala_initial.csv"
+    """
+    Loads historical koala sighting data to the BigQuery table. Used only once when the project is
+    started.
+    """
+    source_name = "koala_initial.csv"
     where_query = r"sighttime+%3E+DATE+%272023-01-01%27"
     koalas_to_bq(source_name, where_query)
-
-
-if __name__ == "__main__":
-    source_name = f"koala_initial.csv"
-    where_query = r"sighttime+%3E+DATE+%272023-01-01%27"
-    koalas_to_gcs(source_name, where_query)

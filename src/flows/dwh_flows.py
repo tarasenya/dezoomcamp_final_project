@@ -1,4 +1,7 @@
-import pyspark
+"""
+Flows dealig with Spark processing DWH
+"""
+import pyspark # noqa
 from pyspark.sql import SparkSession
 from src.schemas import spark_schema
 from src.definitions import (
@@ -15,7 +18,7 @@ SPARK_SESSION = (
     SparkSession.builder.appName("Optimize BigQuery Storage")
     .config(
         "spark.jars.packages",
-        "com.google.cloud.spark:spark-bigquery-with-dependencies_2.12:0.15.1-beta,com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.1.6",
+        "com.google.cloud.spark:spark-bigquery-with-dependencies_2.12:0.15.1-beta,com.google.cloud.bigdataoss:gcs-connector:hadoop2-2.1.6",  # noqa E501
     )
     .config(
         "spark.jars",
@@ -34,6 +37,9 @@ TABLE_NAME = f"{project_name}.{dataset}.{table_name}"
 
 @flow(name="Summarized historical data", log_prints=True)
 def total_number_of_koalas_met():
+    """
+    Crates an aggregated data, koalas met pro day and writes it to the corresponding BigQuery table.
+    """
     print("Preparing the summarized historical data")
     historical_data_table = f"{project_name}.{dataset}.{HISTORICAL_DATA}"
 
@@ -59,9 +65,12 @@ def total_number_of_koalas_met():
 
 @flow(name="Health data", log_prints=True)
 def koala_health_conditions():
+    """
+    Creates an aggregated data, sighted koalas grouped by the health condition and writes
+    to the corresponding BigQuery table.
+    """
     print("Preparing the summarized health data.")
     health_data_table = f"{project_name}.{dataset}.{HEALTH_DATA}"
-    
     koala_data = (
         SPARK_SESSION.read.format("bigquery")
         .option("table", TABLE_NAME)
@@ -80,7 +89,3 @@ def koala_health_conditions():
 
     print(f"The data has been written to  {health_data_table}.")
     health_data.limit(10).show()
-
-
-if __name__ == "__main__":
-    koala_health_conditions()
