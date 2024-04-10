@@ -1,4 +1,4 @@
-0. Log in into GCP VM using SSH:
+0. Log in into GCP VM using SSH (standard way).
 1. Clone and go to a project directory
 ```bash
 git clone https://github.com/tarasenya/dezoomcamp_final_project.git
