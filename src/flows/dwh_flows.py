@@ -1,6 +1,7 @@
 """
 Flows dealig with Spark processing DWH
 """
+import pyspark # noqa
 from pyspark.sql import SparkSession
 from src.schemas import spark_schema
 from src.definitions import (

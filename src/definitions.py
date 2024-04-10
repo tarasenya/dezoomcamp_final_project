@@ -1,5 +1,5 @@
 """
-Defining some constants used in code.
+Defining some constants used in a code basis.
 """
 from configparser import ConfigParser
 
