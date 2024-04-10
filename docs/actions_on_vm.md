@@ -13,10 +13,7 @@ source ~/.bashrc
 ```   
 4. Create the corresponding python environment:
 ```bash
-cd ..
-export PYTHONPATH="${PYTHONPATH}:$(pwd)"
-pipenv install --deploy
-pipenv shell
+bash create_environment.sh
 ```
 4. Start prefect server, deploying the corresponding pipelines and starting the initialization pipeline by:
 
@@ -24,3 +21,13 @@ pipenv shell
 cd scripts
 bash prefect_script.sh
 ```
+_Remark_: Ignore all warnings.
+
+5. In order to access the prefect server on GCP VM one uses the following command:
+```bash
+gcloud compute ssh cloudshell --zone=europe-west3-c -- -NL 4200:localhost:4200
+```   
+6. The deployed pipelines in prefect UI look as the following:
+![PrefectUIDeployments](../visualization/prefect_deployments.png)
+We see that 3 of them are scheduled for 8 PM every day.
+7. One can trigger a manual run by just clicking on a pipeline and then "Quick Run".
