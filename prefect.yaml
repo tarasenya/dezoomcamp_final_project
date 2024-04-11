@@ -4,16 +4,29 @@
 
 # Generic metadata about this project
 name: dezoomcamp_final_project
-prefect-version: 2.16.4
+prefect-version: 2.16.9
 
 # build section allows you to manage and build docker images
-build: null
+build:
+- prefect_docker.deployments.steps.build_docker_image:
+    id: build_image
+    requires: prefect-docker>=0.3.1
+    dockerfile: Dockerfile
+    image_name: europe-west3-docker.pkg.dev/dataengineeringzoomcamp-409819/prefect-repo/koala-image
+    tag: latest
+    platform: linux/amd64
 
 # push section allows you to manage if and how this project is uploaded to remote locations
-push: null
+push:
+- prefect_docker.deployments.steps.push_docker_image:
+    requires: prefect-docker>=0.3.1
+    image_name: '{{ build_image.image_name }}'
+    tag: '{{ build_image.tag }}'
 
 # pull section allows you to provide instructions for cloning this project in remote locations
-pull: null
+pull:
+- prefect.deployments.steps.set_working_directory:
+    directory: /opt/prefect/dezoomcamp_final_project
 
 # the deployments section allows you to provide configuration for deploying flows
 deployments:
@@ -26,9 +39,10 @@ deployments:
   entrypoint: ./src/flows/ingestion_flows.py:initial_state_koalas_to_bq 
   parameters: {}
   work_pool:
-    name: general_worker
+    name: cloud_work_pool
     work_queue_name: null
-    job_variables: {}
+    job_variables:
+      image: '{{ build_image.image }}'
 
 - name: daily-ingestion-deployment
   version: null
@@ -39,9 +53,10 @@ deployments:
   entrypoint: ./src/flows/ingestion_flows.py:current_koalas_to_bq
   parameters: {}
   work_pool:
-    name: general_worker
+    name: cloud_work_pool
     work_queue_name: null
-    job_variables: {}
+    job_variables:
+      image: '{{ build_image.image }}'
   schedule:
     cron: 0 20 * * *
     timezone: UTC
@@ -55,9 +70,10 @@ deployments:
   entrypoint: ./src/flows/dwh_flows.py:koala_health_conditions
   parameters: {}
   work_pool:
-    name: general_worker
+    name: cloud_work_pool
     work_queue_name: null
-    job_variables: {}
+    job_variables:
+      image: '{{ build_image.image }}'
   schedule:
     cron: 0 21 * * *
     timezone: UTC   
@@ -71,9 +87,10 @@ deployments:
   entrypoint: ./src/flows/dwh_flows.py:total_number_of_koalas_met
   parameters: {}
   work_pool:
-    name: general_worker
+    name: cloud_work_pool
     work_queue_name: null
-    job_variables: {}
+    job_variables:
+      image: '{{ build_image.image }}'
   schedule:
     cron: 0 21 * * *
     timezone: UTC  

@@ -46,5 +46,5 @@ variable "service_account_email" {
 
 variable "rolesList" {
 type =list(string)
-default = ["roles/storage.admin","roles/bigquery.admin", "roles/storage.objectAdmin", "roles/viewer"]
+default = ["roles/storage.admin","roles/bigquery.admin", "roles/storage.objectAdmin", "roles/viewer","roles/iam.serviceAccountUser", "roles/run.admin"]
 }

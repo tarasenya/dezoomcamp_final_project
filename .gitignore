@@ -5,3 +5,4 @@ terraform.json
 *.tfstate
 *.tfstate.backup
 *.hcl
+*.key

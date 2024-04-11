@@ -7,53 +7,18 @@ terraform {
   }
 }
 
-resource "google_service_account" "service_account" {
-  account_id   = "taras-de"
-  display_name = "taras-de"
+resource "google_service_account" "prefect-service-account" {
+  account_id   = "prefect-service-account"
+  display_name = "prefect-service-account"
 }
 
-resource "google_project_iam_binding" "service_account" {
+resource "google_project_iam_binding" "prefect-service-account" {
   project = var.project
   count   = length(var.rolesList)
   role    = var.rolesList[count.index]
   members = [
-    "serviceAccount:${google_service_account.service_account.email}"
+    "serviceAccount:${google_service_account.prefect-service-account.email}"
   ]
-}
-resource "google_compute_instance" "gcp_vm" {
-  name = var.server_name
-
-  machine_type = var.machine_type
-
-  zone = var.location
-
-  boot_disk {
-    auto_delete = true
-
-    initialize_params {
-      image = "projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20240223"
-      size  = 30
-      type  = "pd-balanced"
-    }
-
-    mode = "READ_WRITE"
-  }
-
-  can_ip_forward      = false
-  deletion_protection = false
-  enable_display      = false
-
-  network_interface {
-    network = "default"
-    access_config {
-
-    }
-  }
-  metadata_startup_script = file("../scripts/initial_script.sh")
-  service_account {
-    email  = google_service_account.service_account.email
-    scopes = ["cloud-platform"]
-  }
 }
 
 resource "google_storage_bucket" "koala-bucket" {
@@ -77,4 +42,11 @@ resource "google_storage_bucket" "koala-bucket" {
 resource "google_bigquery_dataset" "koala_dataset" {
   dataset_id = var.bq_dataset_name
   location   = var.region
+}
+
+resource "google_artifact_registry_repository" "prefect-repo" {
+  location      = "europe-west3"
+  repository_id = "prefect-repo"
+  description   = "Prefect repository"
+  format        = "DOCKER"
 }
