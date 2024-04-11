@@ -4,6 +4,7 @@
 There are lots of wild koalas in Queensland, Australia. One can report koalas sighting to the Department of Environment, Science and Innovation by using the free  [QWildLife app](https://environment.des.qld.gov.au/wildlife/animals/living-with/koalas/report-sightings). All sightings are then saved on the corresponding server and can be retrieved using [spatial-gis server's endpoint](https://spatial-gis.information.qld.gov.au/arcgis/rest/services/QWise/CrocodileSightingsPublicView/FeatureServer/30).
 
 In this pet project we collect coala sightings events in a batch manner,  save the raw data to GCP bucket, then injest them to GCP BQ (DWH in our case) using dlt, after this using PySpark we calculate the overall statistics for health/dead/injured koalas as well as total number of koalas seen on a particular day. Finally we visualize the corresponding values using Google Looker.
+
 **Remark**: For this scale of data the project is certainly overengineered.
 ## Technical description of a project
 The project is built as the following
@@ -39,6 +40,7 @@ We use Terraform to provision an infrastructure for the project:
   - GCP BigQuery dataset
   - GCP Bucket
   - GCP Docker Artifact Registry
+  
 Detailed steps for the provisioning can be found here: [provisioning_infrastructure.md](docs/provisioning_infrastructure.md)
 Moreover we use Prefect Cloud to orchestrate our pipelines.
 ### Data ingestion: batch
@@ -46,6 +48,7 @@ Data ingestion is done in a DLT fashion using prefect orchestrator:
 1. Every day at 9 p.m. data is loaded to a GCP bucket.
 2. After this data from the corresponding csv file is transformed and loaded into a BigQuery dataset using dlt service.
 There are 2 flows assosiated with ingesting. Those are 'Initial koalas sighting to BQ' (for the initial load of the historical data) and 'Current koalas sighting to BQ' (scheduled for 8 PM on the every day basis).
+
 The above mentioned operations/worklfows are executed using **GCP Cloud Run**. This works pretty good with small batch operations, since we only pay for the time a cloud run function is being executed.
 ### Data warehouse: BigQuery
 The resulted table 'koala' is clustered using 'sighttime' column and    partitioned by 'sightdate' column. After using 'analytic' pipeline tables 'historical_koala_data'
