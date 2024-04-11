@@ -45,7 +45,7 @@ resource "google_bigquery_dataset" "koala_dataset" {
 }
 
 resource "google_artifact_registry_repository" "prefect-repo" {
-  location      = "europe-west3"
+  location      = var.region
   repository_id = "prefect-repo"
   description   = "Prefect repository"
   format        = "DOCKER"

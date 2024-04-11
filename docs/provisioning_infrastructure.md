@@ -76,4 +76,4 @@ The account on IAM & Admin service on GCP looks as the following:
    ```
 3. The infrastructure is provisioned.
    
-The next steps after provisioning can be found [here](actions_on_vm.md)
+The next steps after provisioning can be found [here](actions_on_with_prefect_and_gcp.md)
