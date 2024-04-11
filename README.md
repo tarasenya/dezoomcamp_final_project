@@ -5,6 +5,8 @@ There are lots of wild koalas in Queensland, Australia. One can report koalas si
 
 In this pet project we collect coala sightings events in a batch manner,  save the raw data to GCP bucket, then injest them to GCP BQ (DWH in our case) using dlt, after this using PySpark we calculate the overall statistics for health/dead/injured koalas as well as total number of koalas seen on a particular day. Finally we visualize the corresponding values using Google Looker.
 
+This version of a project uses GCP Cloud Run as an executor and Prefect Cloud for an orchestration.
+
 **Remark**: For this scale of data the project is certainly overengineered.
 ## Technical description of a project
 The project is built as the following
