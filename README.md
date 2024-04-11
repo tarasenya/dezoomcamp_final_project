@@ -7,7 +7,7 @@ In this pet project we collect coala sightings events in a batch manner,  save t
 
 **Remark**: For this scale of data the project is certainly overengineered.
 
-**Remark**: Another version of this project that relates on the GCP Cloud Run functionality toether with Prefect Cloud can be found on the another branch:
+**Remark**: Another version of this project that relates on the GCP Cloud Run functionality toether with Prefect Cloud can be found on another branch:
 ```bash
 https://github.com/tarasenya/dezoomcamp_final_project/tree/docker_version
 ```
@@ -39,6 +39,7 @@ The code's structure can be taken from the next scheme:
     ├── .prefect          <-  definition of prefect flows.
     ├── .dlt              <-  folder for .dlt services.
 
+Python code quality is maintained by _flake8_ library.
 ### IaC/Cloud
 
 We use Terraform to provision an infrastructure for the project:
@@ -49,7 +50,7 @@ We use Terraform to provision an infrastructure for the project:
   
 Detailed steps for the provisioning can be found here: [provisioning_infrastructure.md](docs/provisioning_infrastructure.md)
 ### Data ingestion: batch
-Data ingestion is done in a DLT fashion using prefect orchestrator:
+Data ingestion is done in a DLT fashion using **Prefect Orchestrator**:
 1. Every day at 9 p.m. data is loaded to a GCP bucket.
 2. After this data from the corresponding csv file is transformed and loaded into a BigQuery dataset using dlt service.
 There are 2 flows assosiated with ingesting. Those are 'Initial koalas sighting to BQ' (for the initial load of the historical data) and 'Current koalas sighting to BQ' (scheduled for 8 PM on the every day basis).
