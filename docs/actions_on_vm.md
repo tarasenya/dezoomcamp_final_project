@@ -31,3 +31,5 @@ gcloud compute ssh cloudshell --zone=europe-west3-c -- -NL 4200:localhost:4200
 ![PrefectUIDeployments](../visualization/prefect_deployments.png)
 We see that 3 of them are scheduled for 8 PM every day.
 7. One can trigger a manual run by just clicking on a pipeline and then "Quick Run".
+
+**Remark:** The elaborate process with dwonlaoding, some resources, defining environmental variables suggests using Docker container(s) that incorporate all the actions above. This is done with a slight different architecture on another [branch](https://github.com/tarasenya/dezoomcamp_final_project/tree/docker_version).

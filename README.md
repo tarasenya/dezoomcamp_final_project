@@ -3,8 +3,15 @@
 ## Problem description
 There are lots of wild koalas in Queensland, Australia. One can report koalas sighting to the Department of Environment, Science and Innovation by using the free  [QWildLife app](https://environment.des.qld.gov.au/wildlife/animals/living-with/koalas/report-sightings). All sightings are then saved on the corresponding server and can be retrieved using [spatial-gis server's endpoint](https://spatial-gis.information.qld.gov.au/arcgis/rest/services/QWise/CrocodileSightingsPublicView/FeatureServer/30).
 
-In this pet project we collect coala sightings events in a batch manner,  save the raw data to GCP bucket, then injest them to GCP BQ (DWH in our case) using dlt, after this using PySpark we calculate the overall statistics for health/dead/injured koalas as well as total number of koalas seen on a particular day. Finally we visualize the corresponding values using Google Looker.
+In this pet project we collect coala sightings events in a batch manner,  save the raw data to GCP bucket, then injest them to GCP BQ (DWH in our case) using dlt, after this using PySpark we calculate the overall statistics for health/dead/injured koalas as well as total number of koalas seen on a particular day. Finally we visualize the corresponding values using Google Looker. All of the actions above are orchestrated by Prefect.
+
 **Remark**: For this scale of data the project is certainly overengineered.
+
+**Remark**: Another version of this project that relates on the GCP Cloud Run functionality toether with Prefect Cloud can be found on the another branch:
+```bash
+https://github.com/tarasenya/dezoomcamp_final_project/tree/docker_version
+```
+
 ## Technical description of a project
 The project is built as the following
 ![Structure](./visualization/koala_app.drawio.png)
@@ -38,6 +45,7 @@ We use Terraform to provision an infrastructure for the project:
   - GCP Compute Engine 
   - GCP BigQuery dataset
   - GCP Bucket
+  - IaM service accounts
   
 Detailed steps for the provisioning can be found here: [provisioning_infrastructure.md](docs/provisioning_infrastructure.md)
 ### Data ingestion: batch
